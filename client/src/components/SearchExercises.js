@@ -4,35 +4,16 @@ import { exerciseOptions, fetchData } from "../api";
 
 const SearchExercises = ({ setExercises }) => {
     const [search, setSearch] = useState('');
-    const [bodyParts, setBodyParts] = useState([]);
-
-    useEffect(() => {
-        const fetchExercisesData = async() => {
-            const bodyPartsData = await fetchData(
-                'https://exercisedb.p.rapidapi.com/exercises/bodyPartList', 
-                exerciseOptions);
-            setBodyParts(['all', ...bodyPartsData]);
-        }
-
-        fetchExercisesData();
-    }, [])
 
     const handleSearch = async () => {
         if(search) {
             const exercisesData = await fetchData(
-                'https://exercisedb.p.rapidapi.com/exercises',
+                `https://exercisedb.p.rapidapi.com/exercises/name/${search}`,
                 exerciseOptions
             );
 
-            const searchedExercises = exercisesData.filter(
-                (exercise) => exercise.name.toLowerCase().includes(search)
-                || exercise.target.toLowerCase().includes(search)
-                || exercise.equipment.toLowerCase().includes(search)
-                || exercise.bodyPart.toLowerCase().includes(search)
-            );
-
             setSearch('');
-            setExercises(searchedExercises);
+            setExercises(exercisesData);
         }
     };
 
@@ -57,7 +38,7 @@ const SearchExercises = ({ setExercises }) => {
                     height="76px"
                     value={search}
                     onChange={(e) => setSearch(e.target.value.toLowerCase())}
-                    placeholder="Search Exercises by Body Part"
+                    placeholder="Search Exercises"
                     type="text"
                 />
                 <Button className="search-btn"
